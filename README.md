@@ -9,7 +9,7 @@
 
 
 ### O Projeto 
-A Aquacare é uma solução para monitoramento da qualidade da água. Usando dispositivos de IOT com diversos sensores, os indicadores mais importantes são armazenados em nuvem e podem ser facilmente consultados na forma de tabelas e gráficos em um aplicativo mobile.
+A Aquacare é uma solução para monitoramento da qualidade da água. Usando dispositivos de IOT com diversos sensores, os indicadores de qualidade são armazenados em nuvem e podem ser facilmente consultados 
 
 Esse Sketch de Arduíno demonstra como armazenar informações de diversos sensores de análise de qualidade da água em um Databucket do Thinger.io. 
 
