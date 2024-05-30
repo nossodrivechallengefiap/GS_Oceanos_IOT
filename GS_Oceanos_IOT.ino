@@ -1,53 +1,59 @@
 #include <WiFi.h>
 #include <ThingerESP32.h>
-#include <DHT.h>
 #include "secrets.h"
 
-#define DHTPIN 4
-#define DHTTYPE DHT22
-DHT dht(DHTPIN, DHTTYPE);
-float temperatura, umidade;
+// Declarando variáveis para os indicadores
+float coliformes, ph, oxigenio_dissolvido, turbidez, temperatura;
 
 ThingerESP32 thing(THINGER_USERNAME, THINGER_DEVICE_ID, THINGER_DEVICE_CREDENTIAL);
 
 void setup() {
   Serial.begin(115200);
-  dht.begin();
 
-  // temp = random(10, 26);
-  // umid = random(10, 80);
+  // Atribuindo valores iniciais a os indicadores
+  coliformes = 3000;
+  ph = 7.0;
+  oxigenio_dissolvido = 8.0;
+  turbidez = 1.0;
+  temperatura = 15.0;
 }
 
 void loop() {
 
-  leitura_temp_umid();
+  atualizandoIndicadores();
 
+  // Conectando a o Thinger.io por wifi
   thing.add_wifi(SSID, SSID_PASSWORD);
 
+  // Enviando os indicadores como propriedades
   thing["dadosSensores"] >> [](pson &out){ 
+    out["coliformes"] = coliformes;
+    out["ph"] = ph;
+    out["oxigenio_dissolvido"] = oxigenio_dissolvido;
+    out["turbidez"] = turbidez;
     out["temperatura"] = temperatura;
-    out["umidade"] = umidade;
   };
 
-  // thing["Temperatura"] >> outputValue(temperatura);
-  // thing["Umidade"] >> outputValue(umidade);
-
   thing.handle();
+
+  // Enviando a propriedades para o Databucket do Thinger.io
   thing.write_bucket("aquacare", "dadosSensores");
 
   delay(60000);
 }
 
-// Cria a função para leitura de temperatura e umidade
-void leitura_temp_umid() {
-  //  float variacaoTemp = random(-100, 100) / 100.0;
-  //  temp = temp + variacaoTemp;
-  //  umid = umid + random(-400, 400) / 100.0;
-  temperatura = dht.readTemperature();
-  umidade = dht.readHumidity();
-  Serial.print("Temperatura: ");
-  Serial.print(temperatura);
-  Serial.print(" - ");
-  Serial.print("Umidade: ");
-  Serial.println(umidade);
+// Simulando a atualização dos indicadores com dados dos sensores
+void atualizandoIndicadores() {
+  coliformes += random(-100, 100);
+  ph += random(-100, 100) / 100.0;
+  oxigenio_dissolvido += random(-100, 100) / 100.0;
+  turbidez += random(-100, 100) / 100.0;
+  temperatura += random(-100, 100) / 100.0;
+
+  Serial.println("coliformes: "+String(coliformes));
+  Serial.println("ph: "+String(ph));
+  Serial.println("oxigenio_dissolvido: "+String(oxigenio_dissolvido));
+  Serial.println("turbidez: "+String(turbidez));
+  Serial.println("temperatura: "+String(temperatura));
 }
+
